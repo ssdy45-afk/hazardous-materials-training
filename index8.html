@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>위험물 안전관리 교육 8</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Indigo Tones -->
+    <!-- Application Structure Plan: A thematic, single-page application focused on Hazardous Material Storage Standards. The structure includes a sticky top navigation for quick access to key sections. It features an interactive card interface for different storage standards, a specific quiz, a mandatory training video, and a printable certificate upon completion. The confirmation section is now locked until both the quiz (score >= 70) and video are completed. The certificate now opens in a new, printable window without email functionality and with the updated logo. -->
+    <!-- Visualization & Content Choices: Report Info: Storage standards -> Goal: Organize & Inform -> Viz/Presentation Method: Interactive cards/grids. -> Interaction: Static. -> Justification: Breaks down complex information. Report Info: Knowledge Check -> Goal: Test understanding -> Viz/Presentation Method: Interactive Quiz -> Interaction: User selection and immediate feedback -> Justification: Reinforces learning. Report Info: Mandatory Video -> Goal: Ensure training completion -> Viz/Presentation Method: Embedded YouTube video -> Interaction: Video must be played to the end to unlock the next step -> Justification: Enforces training prerequisite. Report Info: User Confirmation -> Goal: Certify completion -> Viz/Presentation Method: Input form -> Interaction: User input generates a certificate in a new window -> Justification: Provides a record of training. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover {
+            color: #4338ca; 
+        }
+        .content-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .quiz-option.correct {
+            background-color: #dcfce7; /* green-100 */
+        }
+        .quiz-option.incorrect {
+            background-color: #fee2e2; /* red-100 */
+        }
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+        }
+        #player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #confirmation-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 10;
+        }
+        #custom-play-button {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 5;
+            transition: opacity 0.3s;
+        }
+        #custom-play-button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        #custom-play-button svg {
+            width: 80px;
+            height: 80px;
+            fill: white;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-indigo-600">위험물 안전관리 교육 8</h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#overview" class="nav-link text-slate-600 font-medium">저장 기준 개요</a>
+                <a href="#rules" class="nav-link text-slate-600 font-medium">유별 저장 방법</a>
+                <a href="#accidents" class="nav-link text-slate-600 font-medium">사고 사례</a>
+                <a href="#test" class="nav-link text-slate-600 font-medium">안전 테스트</a>
+                <a href="#video-training" class="nav-link text-slate-600 font-medium">필수 동영상</a>
+                <a href="#confirmation" class="nav-link text-slate-600 font-medium">이수 확인</a>
+            </div>
+            <div class="md:hidden">
+                <select id="mobile-nav" class="bg-white border border-slate-300 rounded-md p-2 text-slate-700">
+                    <option value="#hero">메뉴 선택</option>
+                    <option value="#overview">저장 기준 개요</option>
+                    <option value="#rules">유별 저장 방법</option>
+                    <option value="#accidents">사고 사례</option>
+                    <option value="#test">안전 테스트</option>
+                    <option value="#video-training">필수 동영상</option>
+                    <option value="#confirmation">이수 확인</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-12">
+        
+        <section id="hero" class="text-center py-12 md:py-20">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4">위험물 안전관리 교육 8</h2>
+            <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">이번 시간에는 위험물 안전관리법상 **위험물 저장 기준**의 핵심 원칙과 세부 사항에 대해 심층적으로 학습합니다.</p>
+        </section>
+
+        <section id="overview" class="py-12 md:py-16">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10">위험물 저장의 기본 원칙</h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg content-card text-center">
+                    <span class="text-4xl">📜</span>
+                    <h4 class="font-bold text-lg my-2">허가된 장소에 저장</h4>
+                    <p class="text-slate-600 text-sm">지정수량 이상의 위험물은 반드시 허가받은 옥내·외 저장소, 탱크 저장소 등에 저장해야 합니다.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg content-card text-center">
+                    <span class="text-4xl">🏷️</span>
+                    <h4 class="font-bold text-lg my-2">품명·수량 준수</h4>
+                    <p class="text-slate-600 text-sm">허가받은 품명 외의 위험물이나 허가 수량을 초과하여 저장해서는 안 됩니다.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg content-card text-center">
+                    <span class="text-4xl">🚫</span>
+                    <h4 class="font-bold text-lg my-2">혼재 금지</h4>
+                    <p class="text-slate-600 text-sm">서로 다른 유별의 위험물은 접촉 시 발화·폭발 위험이 있으므로 함께 저장할 수 없습니다. (예외 규정 있음)</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg content-card text-center">
+                    <span class="text-4xl">🌡️</span>
+                    <h4 class="font-bold text-lg my-2">온도 관리</h4>
+                    <p class="text-slate-600 text-sm">위험물은 성질에 맞는 적정한 온도를 유지해야 하며, 온도가 오를 위험이 있는 곳은 피해야 합니다.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg content-card text-center">
+                    <span class="text-4xl">🛢️</span>
+                    <h4 class="font-bold text-lg my-2">적합한 용기 사용</h4>
+                    <p class="text-slate-600 text-sm">위험물의 성질에 적응하고 파손, 부식, 균열이 없는 견고한 용기에 수납하여 저장해야 합니다.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-lg content-card text-center">
+                    <span class="text-4xl">⬆️</span>
+                    <h4 class="font-bold text-lg my-2">높이 제한 준수</h4>
+                    <p class="text-slate-600 text-sm">용기를 겹쳐 쌓는 경우, 넘어지거나 파손되지 않도록 법에서 정한 높이를 초과해서는 안 됩니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="rules" class="py-12 md:py-16 bg-white rounded-xl shadow-lg">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10">유별 저장 방법 핵심 요약</h3>
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+                 <div class="border border-slate-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-700">제1류 (산화성 고체)</h4>
+                    <p class="text-sm text-slate-600 mt-2">가연물, 유기물과의 접촉을 피하고, 가열·충격·마찰을 주의하며 통풍이 잘 되는 곳에 보관.</p>
+                </div>
+                <div class="border border-slate-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-700">제2류 (가연성 고체)</h4>
+                    <p class="text-sm text-slate-600 mt-2">점화원 및 산화제와의 접촉을 피하고, 금속분 등은 물이나 산과의 접촉을 피해야 함.</p>
+                </div>
+                <div class="border border-slate-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-700">제3류 (자연발화성/금수성)</h4>
+                    <p class="text-sm text-slate-600 mt-2">물기 엄금, 공기 노출 차단을 위해 보호액(물, 석유 등) 속에 저장.</p>
+                </div>
+                <div class="border border-slate-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-700">제4류 (인화성 액체)</h4>
+                    <p class="text-sm text-slate-600 mt-2">화기 엄금, 통풍이 잘 되는 서늘한 곳에 보관하고, 정전기 발생에 주의.</p>
+                </div>
+                <div class="border border-slate-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-700">제5류 (자기반응성 물질)</h4>
+                    <p class="text-sm text-slate-600 mt-2">가열, 충격, 마찰을 피하고 온도가 낮은 곳에 보관하며 소분하여 저장.</p>
+                </div>
+                <div class="border border-slate-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-indigo-700">제6류 (산화성 액체)</h4>
+                    <p class="text-sm text-slate-600 mt-2">가연물과의 접촉을 피하고, 부식되지 않는 내산성 용기에 넣어 보관.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="accidents" class="py-12 md:py-16">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10">저장 기준 미준수로 인한 사고 사례</h3>
+            <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden content-card">
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/OlIvHaEcFlM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="p-6">
+                    <h4 class="font-bold text-xl mb-2">인천 화학물질 보관 창고 화재 (2018)</h4>
+                    <p class="text-slate-600 text-sm mb-4">인천의 한 화학물질 보관 창고에서 큰불이 나 유독가스가 다량 발생했습니다. 이 창고에는 제4류 위험물(인화성 액체)과 다른 유해화학물질들이 법적 기준을 무시한 채 혼재되어 보관되고 있었습니다. 명확한 발화 원인은 밝혀지지 않았지만, 부적절한 혼합 보관으로 인해 최초 발화가 급격한 연소 확대로 이어진 것으로 추정됩니다.</p>
+                    <div class="bg-indigo-100 p-3 rounded">
+                        <h5 class="font-bold text-indigo-800 text-sm">원인 및 교훈</h5>
+                        <p class="text-indigo-700 text-xs mt-1">위험물 저장의 가장 기본 원칙인 '유별 구분 보관'과 '혼재 금지'를 지키지 않은 것이 사고의 핵심 원인입니다. 서로 다른 성질의 위험물이 접촉하면 예상치 못한 화학 반응을 일으켜 화재나 폭발로 이어질 수 있습니다. 반드시 허가된 품목을 지정된 장소에, 다른 위험물과 안전거리를 확보하여 보관해야 합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="test" class="py-12 md:py-16 bg-white rounded-xl shadow-lg">
+            <div class="text-center mb-10 px-4">
+                <h3 class="text-2xl md:text-3xl font-bold mb-2">안전 지식 테스트 (위험물 저장 기준)</h3>
+                <p class="text-slate-600">학습한 내용을 바탕으로 퀴즈를 풀어보세요. 70점 이상 획득해야 이수증 발급이 가능합니다.</p>
+            </div>
+            <div id="quiz-container" class="max-w-4xl mx-auto px-4 md:px-8 space-y-8">
+            </div>
+            <div class="text-center mt-8">
+                <button id="submit-quiz" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-700 transition-colors">결과 확인</button>
+            </div>
+            <div id="quiz-results" class="max-w-4xl mx-auto px-4 md:px-8 mt-8 text-center"></div>
+        </section>
+
+        <section id="video-training" class="py-12 md:py-16">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10">필수 교육 동영상 시청</h3>
+            <div class="max-w-4xl mx-auto bg-white p-4 rounded-xl shadow-lg">
+                <div id="video-container" class="rounded-lg overflow-hidden">
+                    <div id="player"></div>
+                    <div id="custom-play-button">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+                        </svg>
+                    </div>
+                </div>
+                <p id="video-message" class="text-center text-indigo-600 font-semibold mt-4">이수 확인을 위해 동영상을 끝까지 시청해주세요.</p>
+            </div>
+        </section>
+
+        <section id="confirmation" class="py-12 md:py-16">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-10">교육 이수 확인</h3>
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg relative">
+                 <div id="confirmation-form-wrapper">
+                    <p class="text-slate-600 mb-6 text-center">아래 정보를 입력하고 '이수 확인증 생성' 버튼을 눌러 교육 이수를 완료하세요.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="userName" class="block text-sm font-medium text-slate-700">소속 / 이름</label>
+                            <input type="text" id="userName" name="userName" placeholder="예: 홍길동 (안전관리팀)" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="completionDate" class="block text-sm font-medium text-slate-700">이수 날짜</label>
+                            <input type="date" id="completionDate" name="completionDate" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+                    <div class="text-center mt-8">
+                        <button id="confirm-completion" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-700 transition-colors">이수 확인증 생성</button>
+                    </div>
+                </div>
+                <div id="confirmation-overlay" class="flex items-center justify-center text-center rounded-xl">
+                    <p id="overlay-text" class="text-lg font-bold text-slate-700 bg-slate-200/80 p-6 rounded-lg">
+                        <span class="text-3xl mb-2 block">🔒</span>
+                        안전 테스트를 70점 이상으로 통과하고<br>필수 교육 동영상을 시청해주세요.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-12">
+        <div class="container mx-auto px-6 py-10 text-center">
+            <h3 class="text-2xl font-bold mb-4 text-indigo-500">안전은 실천입니다.</h3>
+            <p class="text-slate-300 max-w-2xl mx-auto mb-6">위험 요소 발견 시 즉시 보고하고, 정기적인 안전 교육과 훈련에 적극적으로 참여하여 우리 모두의 안전한 일터를 만듭시다.</p>
+            <p class="text-sm text-slate-400">&copy; 2024 Interactive Safety Guide. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let player;
+        let finalQuizScore = 0;
+        let isQuizCompleted = false;
+        let isVideoCompleted = false;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '360',
+                width: '640',
+                videoId: '4ivvnKpVnlA', 
+                playerVars: { 
+                    'playsinline': 1,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'rel': 0
+                },
+                events: { 'onStateChange': onPlayerStateChange }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            const customPlayButton = document.getElementById('custom-play-button');
+            if (event.data == YT.PlayerState.PLAYING) {
+                customPlayButton.style.display = 'none';
+            }
+            if (event.data == YT.PlayerState.PAUSED) {
+                customPlayButton.style.display = 'flex';
+            }
+            if (event.data == YT.PlayerState.ENDED) {
+                customPlayButton.style.display = 'flex';
+                isVideoCompleted = true;
+                document.getElementById('video-message').textContent = '✅ 동영상 시청을 완료했습니다.';
+                document.getElementById('video-message').classList.remove('text-indigo-600');
+                document.getElementById('video-message').classList.add('text-green-500');
+                checkCompletionStatus();
+            }
+        }
+
+        function checkCompletionStatus() {
+            const overlay = document.getElementById('confirmation-overlay');
+            const overlayText = document.getElementById('overlay-text');
+            if (isQuizCompleted && isVideoCompleted) {
+                overlay.style.display = 'none';
+            } else if (isQuizCompleted && !isVideoCompleted) {
+                overlayText.innerHTML = `<span class="text-3xl mb-2 block">🔒</span>필수 교육 동영상을 시청해주세요.`;
+            } else if (!isQuizCompleted && isVideoCompleted) {
+                overlayText.innerHTML = `<span class="text-3xl mb-2 block">🔒</span>안전 테스트를 70점 이상으로 통과해주세요.`;
+            }
+        }
+        
+        function openCertificateWindow(userName, completionDate, quizScore) {
+            const certWindow = window.open('', '_blank', 'width=1123,height=794');
+            certWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="ko">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>위험물 안전교육 이수 확인증</title>
+                    <script src="https://cdn.tailwindcss.com"><\/script>
+                    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: 'Noto Sans KR', sans-serif; }
+                        @media print {
+                            #cert-actions { display: none; }
+                        }
+                    </style>
+                </head>
+                <body class="bg-gray-100 flex items-center justify-center">
+                    <div class="bg-white p-10 relative w-full max-w-4xl aspect-[297/210] shadow-lg" id="certificate-content">
+                        <div class="absolute top-8 right-8">
+                             <img src="https://d32gkk464bsqbe.cloudfront.net/company-profiles/o/58445cdc9bb4dffd9edfde94c4a06cf87f4ac55f.jpeg?v=6.8.13" alt="Thermo Fisher Scientific Logo" class="w-40">
+                        </div>
+                        <div class="flex flex-col h-full justify-center items-center text-center">
+                            <h1 class="text-5xl font-bold text-[#E1251B] mb-20">위험물 안전교육 이수 확인증</h1>
+                            <div class="text-2xl space-y-4 text-left">
+                                <p><strong>교육 과정:</strong> 위험물 안전관리 교육 8 (저장 기준)</p>
+                                <p><strong>날짜:</strong> ${completionDate.replaceAll('-', '.')}</p>
+                                <p><strong>TEST 결과:</strong> ${quizScore}점</p>
+                                <p><strong>소속:</strong> 인천 ICDC</p>
+                                <p><strong>이름:</strong> ${userName}</p>
+                            </div>
+                        </div>
+                        <div id="cert-actions" class="absolute bottom-4 right-4 space-x-2">
+                            <button onclick="window.print()" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded hover:bg-indigo-700 transition-colors">인쇄</button>
+                            <button onclick="window.close()" class="bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-slate-600 transition-colors">닫기</button>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            certWindow.document.close();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            const customPlayButton = document.getElementById('custom-play-button');
+            if (customPlayButton) {
+                customPlayButton.addEventListener('click', () => {
+                    if (player && typeof player.playVideo === 'function') {
+                        player.playVideo();
+                    }
+                });
+            }
+
+            const quizData = [
+                { question: "1. 지정수량 이상의 위험물은 어디에 저장해야 하나요?", options: ["아무 창고나 가능", "허가받은 저장소", "지하 주차장"], answer: "허가받은 저장소" },
+                { question: "2. 성질이 다른 위험물을 함께 보관하는 것을 무엇이라고 하나요?", options: ["분산 저장", "혼재", "집중 저장"], answer: "혼재" },
+                { question: "3. 제3류 위험물 중 금수성 물질(나트륨 등)을 저장할 때 가장 주의해야 할 것은?", options: ["충격", "공기", "물기"], answer: "물기" },
+                { question: "4. 인화성 액체(제4류)를 저장하는 장소에 반드시 필요한 조치는?", options: ["가습 장치", "화기 엄금 및 통풍", "보온 장치"], answer: "화기 엄금 및 통풍" },
+                { question: "5. 자기반응성 물질(제5류)을 안전하게 저장하는 방법으로 옳은 것은?", options: ["대량으로 한 곳에 모아서 보관", "가열하여 안정화시킨 후 보관", "소량으로 나누어 서늘한 곳에 보관"], answer: "소량으로 나누어 서늘한 곳에 보관" },
+                { question: "6. 위험물을 담는 용기는 어떠해야 하나요?", options: ["가벼운 플라스틱 용기", "위험물의 성질에 적합하고 견고한 용기", "재활용 종이 상자"], answer: "위험물의 성질에 적합하고 견고한 용기" },
+                { question: "7. 옥외저장소에 용기를 겹쳐 쌓을 때, 무너지지 않도록 무엇을 준수해야 하나요?", options: ["색상별로 쌓기", "높이 제한", "무게 제한 없음"], answer: "높이 제한" },
+                { question: "8. 제1류(산화성 고체)와 제6류(산화성 액체) 위험물 저장 시 공통적으로 피해야 할 것은?", options: ["물", "가연물", "충격"], answer: "가연물" },
+                { question: "9. 인천 화학물질 창고 화재 사고의 주된 원인으로 추정되는 것은?", options: ["자연재해", "방화", "위험물의 부적절한 혼재 보관"], answer: "위험물의 부적절한 혼재 보관" },
+                { question: "10. 저장소에 '위험물 게시판'을 설치하는 가장 중요한 이유는 무엇인가요?", options: ["미관상 보기 좋아서", "법적 의무라서", "위험물의 종류와 주의사항을 알려 안전을 확보하기 위해"], answer: "위험물의 종류와 주의사항을 알려 안전을 확보하기 위해" }
+            ];
+
+            const quizContainer = document.getElementById('quiz-container');
+            if (quizContainer) {
+                quizData.forEach((quizItem, index) => {
+                    const questionElement = document.createElement('div');
+                    questionElement.classList.add('mb-6');
+                    let optionsHtml = '';
+                    quizItem.options.forEach(option => {
+                        optionsHtml += `<label class="block p-3 my-2 border rounded-lg cursor-pointer hover:bg-indigo-50 transition quiz-option"><input type="radio" name="question${index}" value="${option}" class="mr-2"> ${option}</label>`;
+                    });
+                    questionElement.innerHTML = `<p class="font-bold mb-2">${quizItem.question}</p><div id="q${index}-options">${optionsHtml}</div>`;
+                    quizContainer.appendChild(questionElement);
+                });
+            }
+
+            const submitButton = document.getElementById('submit-quiz');
+            const resultsContainer = document.getElementById('quiz-results');
+            if (submitButton) {
+                submitButton.addEventListener('click', () => {
+                    let score = 0;
+                    quizData.forEach((quizItem, index) => {
+                        const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                        if (selectedOption) {
+                            if (selectedOption.value === quizItem.answer) {
+                                score++;
+                            }
+                        }
+                    });
+                    finalQuizScore = score * 10;
+                    resultsContainer.innerHTML = `<h4 class="text-2xl font-bold">테스트 결과</h4><p class="text-xl mt-2">총 10문제 중 <span class="font-bold text-indigo-600">${score}</span>문제를 맞혔습니다. (${finalQuizScore}점)</p><p class="mt-4 text-slate-600">${score >= 7 ? '훌륭합니다! 테스트를 통과했습니다.' : '아쉽지만 통과하지 못했습니다. 내용을 다시 학습하고 재응시해주세요.'}</p>`;
+                    if(score >= 7) {
+                        isQuizCompleted = true;
+                        checkCompletionStatus();
+                    }
+                });
+            }
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.getAttribute('href');
+                    if (document.querySelector(targetId)) {
+                        document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.addEventListener('change', function() {
+                const targetId = this.value;
+                if (targetId && document.querySelector(targetId)) {
+                    document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            const confirmButton = document.getElementById('confirm-completion');
+            const userNameInput = document.getElementById('userName');
+            const completionDateInput = document.getElementById('completionDate');
+
+            if (completionDateInput) {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                completionDateInput.value = `${yyyy}-${mm}-${dd}`;
+            }
+            
+            if (confirmButton) {
+                confirmButton.addEventListener('click', () => {
+                    const userName = userNameInput.value.trim();
+                    const completionDate = completionDateInput.value;
+
+                    if (!userName) {
+                        alert('소속과 이름을 입력해주세요.');
+                        userNameInput.focus();
+                        return;
+                    }
+                    
+                    openCertificateWindow(userName, completionDate, finalQuizScore);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
